@@ -10,3 +10,7 @@ app.use("/chatrooms", chatroomRouter);
 app.listen(PORT, () => {
   console.log(`Server is listening on port ${PORT}`);
 });
+
+app.get("/", (request, response) => {
+  response.send("Server is running...");
+});
