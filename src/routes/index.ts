@@ -1,3 +1,3 @@
-import { router as chatroomRouter } from "./Chatroom/Chatroom";
+import { chatroomRouter as chatroomRouter } from "./ChatroomRoute";
 
 export { chatroomRouter };
