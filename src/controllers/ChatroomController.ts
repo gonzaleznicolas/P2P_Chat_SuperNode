@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { firebaseObject } from "../config/Firebase";
+import {DB_COLLECTION_CHATROOMS} from "../config/constants";
 
 export class ChatroomController {
   public create(req: Request, res: Response): void {
@@ -8,7 +9,7 @@ export class ChatroomController {
   }
 
   public readAllChatrooms(req: Request, res: Response) {
-    firebaseObject.DB.collection("chatrooms")
+    firebaseObject.DB.collection(DB_COLLECTION_CHATROOMS)
       .get()
       .then(collection => {
         const chatrooms = collection.docs.map(doc => {
@@ -23,8 +24,8 @@ export class ChatroomController {
   }
 
   public getChatRoomMembers(req: Request, res: Response) {
-    const members = firebaseObject.DB.collection("chatrooms")
-      .doc(req.body.uid)
+    const members = firebaseObject.DB.collection(DB_COLLECTION_CHATROOMS)
+      .doc(req.body.chatId)
       .get()
       .then(doc => {
         const members = doc.data()?.members ? doc.data()?.members : [];

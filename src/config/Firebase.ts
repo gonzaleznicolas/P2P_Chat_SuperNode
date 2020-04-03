@@ -24,10 +24,6 @@ class Firebase {
     firebase.initializeApp(FIREBASE_CONFIG);
     this.DB = firebase.firestore();
   }
-
-  getCollection(dbPath: string) {
-    return this.DB.collection(dbPath).get();
-  }
 }
 
 export const firebaseObject = new Firebase();

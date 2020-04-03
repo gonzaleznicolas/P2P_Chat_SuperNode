@@ -2,6 +2,7 @@ import express from "express";
 import { PORT } from "./config/constants";
 import { heartbeatRouter } from "./routes/HeartbeatRoute";
 import { chatroomRouter } from "./routes/ChatroomRoute";
+import { clearHeartbeatCron } from "./clearHeartbeatCron";
 
 const app = express();
 app.use(express.json());
@@ -16,3 +17,5 @@ app.listen(PORT, () => {
 app.get("/", (request, response) => {
   response.send("Server is running...");
 });
+
+clearHeartbeatCron();
