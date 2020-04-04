@@ -35,7 +35,11 @@ export class ChatroomController {
       .doc(body.chatId)
       .get()
       .then((doc) => {
-        const members = doc.data()?.members ? doc.data()?.members : [];
+        let members = doc.data()?.members ? doc.data()?.members : [];
+        members = members.filter((member) => {
+          const currentMoment = moment().valueOf();
+          return currentMoment - member.lastSeen < 600000;
+        });
 
         let returnBody = { members: members, log: [] };
 
