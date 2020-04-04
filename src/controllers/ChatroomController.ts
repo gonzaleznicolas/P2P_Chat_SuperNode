@@ -1,11 +1,10 @@
-import {Request, Response} from 'express';
-import {firebaseObject} from '../config/Firebase';
-import {DB_COLLECTION_CHATROOMS} from '../config/constants';
+import { Request, Response } from 'express';
+import { firebaseObject } from '../config/Firebase';
+import { DB_COLLECTION_CHATROOMS } from '../config/constants';
 
 export class ChatroomController {
-  public create(req: Request, res: Response): void {
-    // TODO
-    res.json({ message: 'CREATE /chatrooms request received' });
+  private static validateBody(body: any) {
+    return body.userId && body.chatId && body.ip && body.port;
   }
 
   public readAllChatrooms(req: Request, res: Response) {
@@ -24,8 +23,15 @@ export class ChatroomController {
   }
 
   public getChatRoomMembers(req: Request, res: Response) {
-    const members = firebaseObject.DB.collection(DB_COLLECTION_CHATROOMS)
-      .doc(req.body.chatId)
+    const body = req.body;
+    if (!ChatroomController.validateBody(body)) {
+      console.warn('Incorrect chatroom request received');
+      res.send('Incorrect chatroom request received');
+      return;
+    }
+
+    firebaseObject.DB.collection(DB_COLLECTION_CHATROOMS)
+      .doc(body.chatId)
       .get()
       .then((doc) => {
         const members = doc.data()?.members ? doc.data()?.members : [];
@@ -33,7 +39,17 @@ export class ChatroomController {
         let returnBody = { members: members, log: [] };
 
         if (members.length === 0) {
-            returnBody.log = doc.data()?.log;
+          returnBody.log = doc.data()?.log;
+
+          firebaseObject.DB.collection(DB_COLLECTION_CHATROOMS)
+            .doc(body.chatId)
+            .set(
+              { members: [{ ip: body.ip, lastSeen: 0, port: body.port, userId: body.userId }] },
+              { merge: true },
+            )
+            .then(() => {
+              // TODO: Log error
+            });
         }
 
         res.json(returnBody);
