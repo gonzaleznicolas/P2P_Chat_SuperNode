@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { firebaseObject } from '../config/Firebase';
 import { DB_COLLECTION_CHATROOMS } from '../config/constants';
+import moment from 'moment';
 
 export class ChatroomController {
   private static validateBody(body: any) {
@@ -44,7 +45,16 @@ export class ChatroomController {
           firebaseObject.DB.collection(DB_COLLECTION_CHATROOMS)
             .doc(body.chatId)
             .set(
-              { members: [{ ip: body.ip, lastSeen: 0, port: body.port, userId: body.userId }] },
+              {
+                members: [
+                  {
+                    ip: body.ip,
+                    lastSeen: moment().valueOf(),
+                    port: body.port,
+                    userId: body.userId,
+                  },
+                ],
+              },
               { merge: true },
             )
             .then(() => {
