@@ -5,7 +5,7 @@ import { DB_COLLECTION_CHATROOMS } from "../config/constants";
 
 export class HeartbeatController {
   private static validateBody(body: any) {
-    return body.chatId && body.ip && body.port;
+    return body.userId && body.chatId && body.ip && body.port;
   }
 
   public handleHeartBeat(req: Request, res: Response) {
@@ -25,6 +25,7 @@ export class HeartbeatController {
         if (doc) {
           const members = doc.data()?.members as any[];
           members.push({
+            userId: body.userId,
             ip: body.ip,
             port: body.port,
             lastSeen: moment().valueOf()
