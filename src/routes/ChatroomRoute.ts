@@ -6,9 +6,11 @@ export const chatroomRouter = express.Router({
 });
 
 chatroomRouter.get("/", (req: Request, res: Response) => {
+  controllers.chatroomController.readAllChatrooms(req, res);
+});
+
+chatroomRouter.post("/", (req: Request, res: Response) => {
   if (req.body.chatId) {
     controllers.chatroomController.getChatRoomMembers(req, res);
-  } else {
-    controllers.chatroomController.readAllChatrooms(req, res);
   }
 });

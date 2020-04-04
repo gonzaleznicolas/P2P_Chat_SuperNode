@@ -5,6 +5,6 @@ export const heartbeatRouter = express.Router({
     strict: true
 });
 
-heartbeatRouter.get("/", (req: Request, res: Response) => {
+heartbeatRouter.post("/", (req: Request, res: Response) => {
     controllers.heartbeatController.handleHeartBeat(req, res);
 });
