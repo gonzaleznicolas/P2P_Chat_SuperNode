@@ -38,7 +38,7 @@ export class ChatroomController {
         let members = doc.data()?.members ? doc.data()?.members : [];
         members = members.filter((member) => {
           const currentMoment = moment().valueOf();
-          return currentMoment - member.lastSeen < 600000;
+          return currentMoment - member.lastSeen < 50000;
         });
 
         let returnBody = { members: members, log: [] };
