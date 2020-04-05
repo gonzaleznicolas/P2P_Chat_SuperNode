@@ -26,10 +26,13 @@ export class HeartbeatController {
       .then((doc) => {
         if (doc) {
           const chatroom = doc.data() as Chatroom;
+
+          // Remove current member from members list
           const members = chatroom.members.filter((member) => {
             return member.userId !== heartbeatRequest.userId;
           });
 
+          // Update members last seen timestamp
           members.push({
             userId: heartbeatRequest.userId,
             ip: heartbeatRequest.ip,
@@ -37,12 +40,20 @@ export class HeartbeatController {
             lastSeen: moment().valueOf(),
           });
 
+          // Update database
+          // TODO: Make this await or else there could be multiple polling requests
           firebaseObject.DB.collection(DB_COLLECTION_CHATROOMS)
             .doc(heartbeatRequest.chatId)
-            .set({ members: members }, { merge: true })
-            .then(() => {
-              res.send('Received Heartbeat');
-            });
+            .set({ members: members, toBePolled: false }, { merge: true });
+
+          // Send polling response if needed
+          if (chatroom.toBePolled) {
+            // TODO: Add mechanism to to set toBePolled to true if poll fails
+            res.send('Heartbeat received - Send message history');
+          } else {
+            res.send('Heartbeat received');
+          }
+
         } else {
           res.send('Chatroom id does not exist');
         }

@@ -3,6 +3,7 @@ export class Chatroom {
   public name: string = '';
   public members: Member[] = [];
   public log: Message[] = [];
+  public toBePolled: boolean = false;
 }
 
 export class Member {

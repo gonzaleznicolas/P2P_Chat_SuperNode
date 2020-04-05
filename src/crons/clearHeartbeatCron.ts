@@ -1,5 +1,5 @@
-import { firebaseObject } from './config/Firebase';
-import { DB_COLLECTION_CHATROOMS } from './config/constants';
+import { firebaseObject } from '../config/Firebase';
+import { DB_COLLECTION_CHATROOMS } from '../config/constants';
 import moment from 'moment';
 
 export const clearHeartbeatCron = () => {
@@ -7,6 +7,7 @@ export const clearHeartbeatCron = () => {
 };
 
 const filterMembers = () => {
+  console.log('Running filtering cron');
   firebaseObject.DB.collection(DB_COLLECTION_CHATROOMS)
     .get()
     .then((docs) => {
