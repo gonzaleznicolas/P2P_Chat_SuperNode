@@ -14,7 +14,6 @@ export class Member {
 }
 
 export class Message {
-  public userId: string = '';
   public username: string = '';
   public message: string = '';
 }

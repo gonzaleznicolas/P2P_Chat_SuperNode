@@ -119,12 +119,10 @@ Received Heartbeat and Requires Message History
 	"chatId": "aCh2iBdMOpu6y3Bh1dEL", 
 	"log": [
 		{
-			"userId": "sdfsdf",
 			"username": "User 1"
 			"message": "Hello world"
 		}, 
 		{
-			"userId": "sdfsdfdsfds",
 			"username": "User 2"
 			"message": "World Hello!"
 		}
