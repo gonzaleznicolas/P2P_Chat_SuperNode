@@ -32,6 +32,8 @@ Get details for a specific chatroom
 	"chatId": "aCh2iBdMOpu6y3Bh1dEL",
 	"ip": "127.0.0.1",
 	"port": "5002"
+	"userId": "dsfsdjsdkfs"
+
 }
 ```
 

@@ -5,8 +5,18 @@ import { MessageRequest } from '../models/Requests';
 import { Chatroom } from '../models/Chatroom';
 
 export class MessageController {
+  private static polledChatIds = new Set();
+
   private static validateBody(body: any) {
     return body.chatId && body.log;
+  }
+
+  public static addPolledChatId(chatId: string) {
+    MessageController.polledChatIds.add(chatId);
+  }
+
+  public static hasPolledChatId(chatId: string): boolean {
+    return MessageController.polledChatIds.has(chatId);
   }
 
   public handleMessageLog(req: Request, res: Response) {
@@ -28,6 +38,9 @@ export class MessageController {
               .doc(messageRequest.chatId)
               .set({ log: messageRequest.log }, { merge: true })
               .then(() => {
+                if (MessageController.polledChatIds.has(messageRequest.chatId)) {
+                  MessageController.polledChatIds.delete(messageRequest.chatId);
+                }
                 res.send('Message log received');
               });
           } else {

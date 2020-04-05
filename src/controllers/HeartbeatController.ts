@@ -4,6 +4,7 @@ import moment from 'moment';
 import { DB_COLLECTION_CHATROOMS } from '../config/constants';
 import { HeartbeatRequest } from '../models/Requests';
 import { Chatroom } from '../models/Chatroom';
+import { MessageController } from './MessageController';
 
 export class HeartbeatController {
   private static validateBody(body: any) {
@@ -48,6 +49,19 @@ export class HeartbeatController {
               // Send polling response if needed
               if (chatroom.toBePolled) {
                 // TODO: Add mechanism to to set toBePolled to true if poll fails
+                MessageController.addPolledChatId(heartbeatRequest.chatId);
+                setTimeout(() => {
+                  if (MessageController.hasPolledChatId(heartbeatRequest.chatId)) {
+                    firebaseObject.DB.collection(DB_COLLECTION_CHATROOMS)
+                      .doc(heartbeatRequest.chatId)
+                      .set({ toBePolled: true }, { merge: true })
+                      .then(() => {
+                        console.log(
+                          'Chat ' + heartbeatRequest.chatId + ' needs to be polled again.',
+                        );
+                      });
+                  }
+                }, 5000);
                 res.send('Heartbeat received - Send message history');
               } else {
                 res.send('Heartbeat received');
