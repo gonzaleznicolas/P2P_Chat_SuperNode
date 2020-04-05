@@ -3,7 +3,7 @@ import { firebaseObject } from '../config/Firebase';
 import moment from 'moment';
 import { DB_COLLECTION_CHATROOMS } from '../config/constants';
 import { HeartbeatRequest } from '../models/Requests';
-import { Member } from '../models/Chatroom';
+import { Chatroom } from '../models/Chatroom';
 
 export class HeartbeatController {
   private static validateBody(body: any) {
@@ -25,7 +25,8 @@ export class HeartbeatController {
       .get()
       .then((doc) => {
         if (doc) {
-          const members = (doc.data()?.members as Member[]).filter((member) => {
+          const chatroom = doc.data() as Chatroom;
+          const members = chatroom.members.filter((member) => {
             return member.userId !== heartbeatRequest.userId;
           });
 

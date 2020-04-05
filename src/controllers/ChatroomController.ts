@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { firebaseObject } from '../config/Firebase';
 import { DB_COLLECTION_CHATROOMS } from '../config/constants';
 import moment from 'moment';
-import { Chatroom, Member } from '../models/Chatroom';
+import { Chatroom, Member, Message } from '../models/Chatroom';
 import { ChatroomRequest } from '../models/Requests';
 
 export class ChatroomController {
@@ -38,16 +38,16 @@ export class ChatroomController {
       .doc(chatRoomRequest.chatId)
       .get()
       .then((doc) => {
-        let members = doc.data()?.members ? (doc.data()?.members as Member[]) : [];
-        members = members.filter((member) => {
+        const chatroom = doc.data() as Chatroom;
+        const members = chatroom.members.filter((member) => {
           const currentMoment = moment().valueOf();
           return currentMoment - member.lastSeen < 50000;
         });
 
-        let returnBody = { members: members, log: [] };
+        let returnBody = { members: members, log: [] as Message[] };
 
         if (members.length === 0) {
-          returnBody.log = doc.data()?.log;
+          returnBody.log = chatroom.log;
 
           firebaseObject.DB.collection(DB_COLLECTION_CHATROOMS)
             .doc(chatRoomRequest.chatId)

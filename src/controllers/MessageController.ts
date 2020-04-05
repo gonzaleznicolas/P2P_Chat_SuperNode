@@ -13,7 +13,7 @@ export class MessageController {
     if (!MessageController.validateBody(messageRequest)) {
       console.warn('Incorrect heartbeat received');
       res.send('Incorrect heartbeat received');
-      return
+      return;
     }
 
     firebaseObject.DB.collection(DB_COLLECTION_CHATROOMS)
