@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { firebaseObject } from '../config/Firebase';
 import { DB_COLLECTION_CHATROOMS } from '../config/constants';
+import { MessageRequest } from '../models/Requests';
 
 export class MessageController {
   private static validateBody(body: any) {
@@ -8,21 +9,21 @@ export class MessageController {
   }
 
   public handleMessageLog(req: Request, res: Response) {
-    const body = req.body;
-    if (!MessageController.validateBody(body)) {
+    const messageRequest = req.body as MessageRequest;
+    if (!MessageController.validateBody(messageRequest)) {
       console.warn('Incorrect heartbeat received');
       res.send('Incorrect heartbeat received');
-      return;
+      return
     }
 
     firebaseObject.DB.collection(DB_COLLECTION_CHATROOMS)
-      .doc(req.body.chatId)
+      .doc(messageRequest.chatId)
       .get()
       .then((doc) => {
         if (doc) {
           firebaseObject.DB.collection(DB_COLLECTION_CHATROOMS)
-            .doc(body.chatId)
-            .set({ log: body.log }, { merge: true })
+            .doc(messageRequest.chatId)
+            .set({ log: messageRequest.log }, { merge: true })
             .then(() => {
               res.send('Message log received');
             });

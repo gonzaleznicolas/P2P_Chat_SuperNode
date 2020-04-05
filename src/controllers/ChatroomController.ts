@@ -2,6 +2,8 @@ import { Request, Response } from 'express';
 import { firebaseObject } from '../config/Firebase';
 import { DB_COLLECTION_CHATROOMS } from '../config/constants';
 import moment from 'moment';
+import { Chatroom, Member } from '../models/Chatroom';
+import { ChatroomRequest } from '../models/Requests';
 
 export class ChatroomController {
   private static validateBody(body: any) {
@@ -13,9 +15,10 @@ export class ChatroomController {
       .get()
       .then((collection) => {
         const chatrooms = collection.docs.map((doc) => {
+          const chatroom = doc.data() as Chatroom;
           return {
-            chatRoomId: doc.data().id,
-            chatRoomName: doc.data().name,
+            chatRoomId: chatroom.id,
+            chatRoomName: chatroom.name,
           };
         });
 
@@ -24,18 +27,18 @@ export class ChatroomController {
   }
 
   public getChatRoomMembers(req: Request, res: Response) {
-    const body = req.body;
-    if (!ChatroomController.validateBody(body)) {
+    const chatRoomRequest = req.body as ChatroomRequest;
+    if (!ChatroomController.validateBody(chatRoomRequest)) {
       console.warn('Incorrect chatroom request received');
       res.send('Incorrect chatroom request received');
       return;
     }
 
     firebaseObject.DB.collection(DB_COLLECTION_CHATROOMS)
-      .doc(body.chatId)
+      .doc(chatRoomRequest.chatId)
       .get()
       .then((doc) => {
-        let members = doc.data()?.members ? doc.data()?.members : [];
+        let members = doc.data()?.members ? (doc.data()?.members as Member[]) : [];
         members = members.filter((member) => {
           const currentMoment = moment().valueOf();
           return currentMoment - member.lastSeen < 50000;
@@ -47,15 +50,15 @@ export class ChatroomController {
           returnBody.log = doc.data()?.log;
 
           firebaseObject.DB.collection(DB_COLLECTION_CHATROOMS)
-            .doc(body.chatId)
+            .doc(chatRoomRequest.chatId)
             .set(
               {
                 members: [
                   {
-                    ip: body.ip,
+                    ip: chatRoomRequest.ip,
                     lastSeen: moment().valueOf(),
-                    port: body.port,
-                    userId: body.userId,
+                    port: chatRoomRequest.port,
+                    userId: chatRoomRequest.userId,
                   },
                 ],
               },

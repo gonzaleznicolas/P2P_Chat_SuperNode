@@ -2,6 +2,8 @@ import { Request, Response } from 'express';
 import { firebaseObject } from '../config/Firebase';
 import moment from 'moment';
 import { DB_COLLECTION_CHATROOMS } from '../config/constants';
+import { HeartbeatRequest } from '../models/Requests';
+import { Member } from '../models/Chatroom';
 
 export class HeartbeatController {
   private static validateBody(body: any) {
@@ -11,31 +13,31 @@ export class HeartbeatController {
   public handleHeartBeat(req: Request, res: Response) {
     console.log('Heartbeat received');
 
-    const body = req.body;
-    if (!HeartbeatController.validateBody(body)) {
+    const heartbeatRequest = req.body as HeartbeatRequest;
+    if (!HeartbeatController.validateBody(heartbeatRequest)) {
       console.warn('Incorrect heartbeat received');
       res.send('Incorrect heartbeat received');
       return;
     }
 
     firebaseObject.DB.collection(DB_COLLECTION_CHATROOMS)
-      .doc(body.chatId)
+      .doc(heartbeatRequest.chatId)
       .get()
       .then((doc) => {
         if (doc) {
-          const members = (doc.data()?.members as any[]).filter((value) => {
-            return value.userId !== body.userId;
+          const members = (doc.data()?.members as Member[]).filter((member) => {
+            return member.userId !== heartbeatRequest.userId;
           });
 
           members.push({
-            userId: body.userId,
-            ip: body.ip,
-            port: body.port,
+            userId: heartbeatRequest.userId,
+            ip: heartbeatRequest.ip,
+            port: heartbeatRequest.port,
             lastSeen: moment().valueOf(),
           });
 
           firebaseObject.DB.collection(DB_COLLECTION_CHATROOMS)
-            .doc(body.chatId)
+            .doc(heartbeatRequest.chatId)
             .set({ members: members }, { merge: true })
             .then(() => {
               res.send('Received Heartbeat');
