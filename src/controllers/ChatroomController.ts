@@ -2,12 +2,39 @@ import { Request, Response } from 'express';
 import { firebaseObject } from '../config/Firebase';
 import { DB_COLLECTION_CHATROOMS } from '../config/constants';
 import moment from 'moment';
-import { Chatroom, Member, Message } from '../models/Chatroom';
-import { ChatroomRequest } from '../models/Requests';
+import { Chatroom, Message } from '../models/Chatroom';
+import { CreateChatroomRequest, GetChatroomRequest } from '../models/Requests';
+import { v4 as uuidv4 } from 'uuid';
 
 export class ChatroomController {
-  private static validateBody(body: any) {
+  private static validateCreateChatRoomBody(body: any) {
+    return body.name;
+  }
+
+  private static validateGetChatroomBody(body: any) {
     return body.userId && body.chatId && body.ip && body.port;
+  }
+
+  public createChatroom(req: Request, res: Response) {
+    const createChatroomRequest = req.body as CreateChatroomRequest;
+
+    if (ChatroomController.validateCreateChatRoomBody(createChatroomRequest)) {
+      const newChatroom = {
+        id: uuidv4(),
+        log: [],
+        members: [],
+        name: req.body.name,
+        toBePolled: false,
+      };
+      firebaseObject.DB.collection(DB_COLLECTION_CHATROOMS).doc(newChatroom.id)
+        .set(newChatroom)
+        .then(() => {
+          console.log('Created chatroom ' + createChatroomRequest.name);
+          res.send('Created chatroom ' + createChatroomRequest.name);
+        });
+    } else {
+      res.send('Invalid create chatroom request');
+    }
   }
 
   public readAllChatrooms(req: Request, res: Response) {
@@ -27,8 +54,8 @@ export class ChatroomController {
   }
 
   public getChatRoomMembers(req: Request, res: Response) {
-    const chatRoomRequest = req.body as ChatroomRequest;
-    if (!ChatroomController.validateBody(chatRoomRequest)) {
+    const chatRoomRequest = req.body as GetChatroomRequest;
+    if (!ChatroomController.validateGetChatroomBody(chatRoomRequest)) {
       console.warn('Incorrect chatroom request received');
       res.send('Incorrect chatroom request received');
       return;

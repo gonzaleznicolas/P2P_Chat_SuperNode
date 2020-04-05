@@ -1,10 +1,14 @@
 import { Message } from './Chatroom';
 
-export interface ChatroomRequest {
+export interface GetChatroomRequest {
   chatId: string;
   userId: string;
   ip: string;
   port: string;
+}
+
+export interface CreateChatroomRequest {
+  name: string;
 }
 
 export interface HeartbeatRequest {

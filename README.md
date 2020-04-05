@@ -68,7 +68,24 @@ If members array is empty
      "log": []
  }
 ```
- 
+
+#### POST /chatrooms/create
+
+Create a chatroom
+
+##### Sample Body
+```
+{
+	"name": "newChatRoom" 
+}
+``` 
+
+##### Sample Responses (TBD)
+
+Success
+
+`Created chatroom newChatRoom`
+
 
 #### POST /heartbeat
 
@@ -85,6 +102,14 @@ Post a heartbeat message
 ```
 
 ##### Sample Response (TBD)
+
+Received Heartbeat
+
+`Heartbeat received`
+
+Received Heartbeat and Requires Message History
+
+`Heartbeat received - Send message history`
 
 #### POST /messages
 
