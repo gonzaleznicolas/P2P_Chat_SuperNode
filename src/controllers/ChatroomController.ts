@@ -92,7 +92,7 @@ export class ChatroomController {
               { merge: true },
             )
             .then(() => {
-              // TODO: Log error
+              console.debug('Added first user to chatroom: ' + chatRoomRequest.chatId)
             });
         }
 

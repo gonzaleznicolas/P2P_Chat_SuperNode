@@ -41,19 +41,18 @@ export class HeartbeatController {
           });
 
           // Update database
-          // TODO: Make this await or else there could be multiple polling requests
           firebaseObject.DB.collection(DB_COLLECTION_CHATROOMS)
             .doc(heartbeatRequest.chatId)
-            .set({ members: members, toBePolled: false }, { merge: true });
-
-          // Send polling response if needed
-          if (chatroom.toBePolled) {
-            // TODO: Add mechanism to to set toBePolled to true if poll fails
-            res.send('Heartbeat received - Send message history');
-          } else {
-            res.send('Heartbeat received');
-          }
-
+            .set({ members: members, toBePolled: false }, { merge: true })
+            .then(() => {
+              // Send polling response if needed
+              if (chatroom.toBePolled) {
+                // TODO: Add mechanism to to set toBePolled to true if poll fails
+                res.send('Heartbeat received - Send message history');
+              } else {
+                res.send('Heartbeat received');
+              }
+            });
         } else {
           res.send('Chatroom id does not exist');
         }
