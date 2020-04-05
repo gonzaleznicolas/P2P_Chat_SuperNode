@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { firebaseObject } from '../config/Firebase';
 import { DB_COLLECTION_CHATROOMS } from '../config/constants';
 import { MessageRequest } from '../models/Requests';
+import { Chatroom } from '../models/Chatroom';
 
 export class MessageController {
   private static validateBody(body: any) {
@@ -21,12 +22,17 @@ export class MessageController {
       .get()
       .then((doc) => {
         if (doc) {
-          firebaseObject.DB.collection(DB_COLLECTION_CHATROOMS)
-            .doc(messageRequest.chatId)
-            .set({ log: messageRequest.log }, { merge: true })
-            .then(() => {
-              res.send('Message log received');
-            });
+          const chatroom = doc.data() as Chatroom;
+          if (chatroom.log.length < messageRequest.log.length) {
+            firebaseObject.DB.collection(DB_COLLECTION_CHATROOMS)
+              .doc(messageRequest.chatId)
+              .set({ log: messageRequest.log }, { merge: true })
+              .then(() => {
+                res.send('Message log received');
+              });
+          } else {
+            res.send('Polled log has less entries than existing messaging log. Will not save.');
+          }
         } else {
           res.send('Message chatId does not exist');
         }
