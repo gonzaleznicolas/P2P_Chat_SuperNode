@@ -11,7 +11,7 @@ export class MessageController {
     if (body.chatId && body.log) {
       const messages = body.log as Message[];
       for (const msg of messages) {
-        if (!(msg.message && msg.username)) {
+        if (!(msg.message && msg.username && msg.userId)) {
           return false;
         }
       }
