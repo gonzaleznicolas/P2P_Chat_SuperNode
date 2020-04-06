@@ -26,7 +26,8 @@ export class ChatroomController {
         name: req.body.name,
         toBePolled: false,
       };
-      firebaseObject.DB.collection(DB_COLLECTION_CHATROOMS).doc(newChatroom.id)
+      firebaseObject.DB.collection(DB_COLLECTION_CHATROOMS)
+        .doc(newChatroom.id)
         .set(newChatroom)
         .then(() => {
           console.log('Created chatroom ' + createChatroomRequest.name);
@@ -68,8 +69,18 @@ export class ChatroomController {
         const chatroom = doc.data() as Chatroom;
         const members = chatroom.members.filter((member) => {
           const currentMoment = moment().valueOf();
-          return currentMoment - member.lastSeen < 50000;
+          return currentMoment - member.lastSeen < 5000;
         });
+
+        // Set members to be the filtered members
+        if (members.length < chatroom.members.length) {
+          firebaseObject.DB.collection(DB_COLLECTION_CHATROOMS)
+            .doc(chatroom.id)
+            .set({ members: members }, { merge: true })
+            .then(() => {
+              console.log('Cleared stale members for chat: ' + chatroom.name);
+            });
+        }
 
         let returnBody = { members: members, log: [] as Message[] };
 
@@ -92,7 +103,7 @@ export class ChatroomController {
               { merge: true },
             )
             .then(() => {
-              console.debug('Added first user to chatroom: ' + chatRoomRequest.chatId)
+              console.debug('Added first user to chatroom: ' + chatRoomRequest.chatId);
             });
         }
 
