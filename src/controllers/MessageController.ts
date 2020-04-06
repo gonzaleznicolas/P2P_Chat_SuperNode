@@ -2,13 +2,23 @@ import { Request, Response } from 'express';
 import { firebaseObject } from '../config/Firebase';
 import { DB_COLLECTION_CHATROOMS } from '../config/constants';
 import { MessageRequest } from '../models/Requests';
-import { Chatroom } from '../models/Chatroom';
+import { Chatroom, Message } from '../models/Chatroom';
 
 export class MessageController {
   private static polledChatIds = new Set();
 
   private static validateBody(body: any) {
-    return body.chatId && body.log;
+    if (body.chatId && body.log) {
+      const messages = body.log as Message[];
+      for (const msg of messages) {
+        if (!(msg.message && msg.username)) {
+          return false;
+        }
+      }
+      return true;
+    } else {
+      return false;
+    }
   }
 
   public static addPolledChatId(chatId: string) {
@@ -22,8 +32,8 @@ export class MessageController {
   public handleMessageLog(req: Request, res: Response) {
     const messageRequest = req.body as MessageRequest;
     if (!MessageController.validateBody(messageRequest)) {
-      console.warn('Incorrect heartbeat received');
-      res.send('Incorrect heartbeat received');
+      console.warn('Incorrect message log received');
+      res.send('Incorrect message log received');
       return;
     }
 
