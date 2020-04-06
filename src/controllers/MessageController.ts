@@ -57,7 +57,7 @@ export class MessageController {
             if (MessageController.polledChatIds.has(messageRequest.chatId)) {
               MessageController.polledChatIds.delete(messageRequest.chatId);
             }
-            res.send('Polled log has less entries than existing messaging log. Will not save.');
+            res.send('Message log received');
           } else {
             res.send('Polled log has less entries than existing messaging log. Will not save.');
           }
