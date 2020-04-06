@@ -43,6 +43,11 @@ export class MessageController {
                 }
                 res.send('Message log received');
               });
+          } else if (chatroom.log.length === messageRequest.log.length) {
+            if (MessageController.polledChatIds.has(messageRequest.chatId)) {
+              MessageController.polledChatIds.delete(messageRequest.chatId);
+            }
+            res.send('Polled log has less entries than existing messaging log. Will not save.');
           } else {
             res.send('Polled log has less entries than existing messaging log. Will not save.');
           }

@@ -12,8 +12,6 @@ export class HeartbeatController {
   }
 
   public handleHeartBeat(req: Request, res: Response) {
-    console.log('Heartbeat received');
-
     const heartbeatRequest = req.body as HeartbeatRequest;
     if (!HeartbeatController.validateBody(heartbeatRequest)) {
       console.warn('Incorrect heartbeat received');
@@ -48,7 +46,6 @@ export class HeartbeatController {
             .then(() => {
               // Send polling response if needed
               if (chatroom.toBePolled) {
-                // TODO: Add mechanism to to set toBePolled to true if poll fails
                 MessageController.addPolledChatId(heartbeatRequest.chatId);
                 setTimeout(() => {
                   if (MessageController.hasPolledChatId(heartbeatRequest.chatId)) {
