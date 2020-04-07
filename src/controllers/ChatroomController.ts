@@ -6,6 +6,9 @@ import { Chatroom, Message } from '../models/Chatroom';
 import { CreateChatroomRequest, GetChatroomRequest } from '../models/Requests';
 import { v4 as uuidv4 } from 'uuid';
 
+/**
+ * Handles requests relating to chatrooms
+ */
 export class ChatroomController {
   private static validateCreateChatRoomBody(body: any) {
     return body.name;
@@ -15,6 +18,9 @@ export class ChatroomController {
     return body.userId && body.chatId && body.ip && body.port;
   }
 
+  /**
+   * Create a new chatroom
+   */
   public createChatroom(req: Request, res: Response) {
     const createChatroomRequest = req.body as CreateChatroomRequest;
 
@@ -38,6 +44,9 @@ export class ChatroomController {
     }
   }
 
+  /**
+   * Return all existing chatrooms
+   */
   public readAllChatrooms(req: Request, res: Response) {
     firebaseObject.DB.collection(DB_COLLECTION_CHATROOMS)
       .get()
@@ -54,6 +63,9 @@ export class ChatroomController {
       });
   }
 
+  /**
+   * Get Chatroom members for a specific chatroom
+   */
   public getChatRoomMembers(req: Request, res: Response) {
     const chatRoomRequest = req.body as GetChatroomRequest;
     if (!ChatroomController.validateGetChatroomBody(chatRoomRequest)) {

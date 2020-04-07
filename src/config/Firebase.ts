@@ -12,7 +12,7 @@ const FIREBASE_CONFIG = {
 };
 
 /**
- * Utility class for interacting with Firebase authorization API
+ * Class that initializes the firebaseObject
  */
 class Firebase {
   public DB: firebase.firestore.Firestore;

@@ -1,6 +1,9 @@
 import express, { Request, Response } from "express";
 import {controllers} from "../controllers";
 
+/**
+ * Routes requests to the /heartbeat endpoint
+ */
 export const heartbeatRouter = express.Router({
     strict: true
 });

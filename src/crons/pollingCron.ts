@@ -1,8 +1,10 @@
 import { firebaseObject } from '../config/Firebase';
 import { DB_COLLECTION_CHATROOMS } from '../config/constants';
 
+/**
+ * Sets the toBePolled flag for all chatrooms to true. Runs periodically
+ */
 export const pollingCron = () => {
-  // TODO: At 1 minute for testing, but change to 10 minutes
   setInterval(setPollFlag, 60000);
 };
 

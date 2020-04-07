@@ -1,3 +1,6 @@
+/**
+ * Models a Chatroom collection stored in the DB
+ */
 export class Chatroom {
   public id: string = '';
   public name: string = '';
@@ -6,6 +9,9 @@ export class Chatroom {
   public toBePolled: boolean = false;
 }
 
+/**
+ * Models a Member object in the DB
+ */
 export class Member {
   public userId: string = '';
   public ip: string = '';
@@ -13,6 +19,9 @@ export class Member {
   public lastSeen: number = 0;
 }
 
+/**
+ * Models a Message object in the DB
+ */
 export class Message {
   public username: string = '';
   public userId: string = '';

@@ -1,12 +1,21 @@
 #CentralServer
 
-##Enpoints
+## Setup (dev)
+1. Run `npm install`
+2. Run `npm run dev`
+
+## Deploy
+1. Run `gcloud init`. Requires authorization.
+2. Run `npm run deploy`
+
+##Endpoints
 
 #### GET /chatrooms
 
 Get all chatroom names and their ids
 
 ##### Sample Response
+
 ```
 {
     "rooms": [
@@ -27,6 +36,7 @@ Get all chatroom names and their ids
 Get details for a specific chatroom
 
 ##### Sample Body
+
 ```
 {
 	"chatId": "aCh2iBdMOpu6y3Bh1dEL",
@@ -38,37 +48,41 @@ Get details for a specific chatroom
 ```
 
 ##### Sample Responses
+
 If members array is empty
 
 ```
 {
      "members": [],
      "log": [
-         {
-             "message": "Hello world",
-             "userId": "sdfsdf"
-         },
-         {
-             "message": "World Hello!",
-             "userId": "sdfsdfdsfds"
-         }
-     ]
+     		{
+     			"username": "User 1", 
+     			"message": "Hello world",
+     			"userId": "sdfsdf"
+     		}, 
+     		{
+     			"username": "User 2", 
+     			"userId": "sdfdsf",
+     			"message": "World Hello!"
+     		}
+     	]
  }
 ```
- 
- If members array is not empty
- ```
- {
-     "members": [
-         {
-             "ip": "127.0.0.1",
-             "lastSeen": 1585972707218,
-             "port": "5002",
-             "userId": "sdfsdfdsf"
-         }
-     ],
-     "log": []
- }
+
+If members array is not empty
+
+```
+{
+    "members": [
+        {
+            "ip": "127.0.0.1",
+            "lastSeen": 1585972707218,
+            "port": "5002",
+            "userId": "sdfsdfdsf"
+        }
+    ],
+    "log": []
+}
 ```
 
 #### POST /chatrooms/create
@@ -76,24 +90,23 @@ If members array is empty
 Create a chatroom
 
 ##### Sample Body
+
 ```
 {
-	"name": "newChatRoom" 
+	"name": "newChatRoom"
 }
-``` 
+```
 
-##### Sample Responses (TBD)
+##### Sample Responses
 
-Success
-
-`Created chatroom newChatRoom`
-
+Indicates if creation was successful, or provides a error message.
 
 #### POST /heartbeat
 
 Post a heartbeat message
 
 ##### Sample Body
+
 ```
 {
 	"userId": "sdfsdfdsf",
@@ -103,7 +116,7 @@ Post a heartbeat message
 }
 ```
 
-##### Sample Response (TBD)
+##### Sample Response
 
 Received Heartbeat
 
@@ -116,21 +129,25 @@ Received Heartbeat and Requires Message History
 #### POST /messages
 
 ##### Sample Body
+
 ```
-{ 
-	"chatId": "aCh2iBdMOpu6y3Bh1dEL", 
+{
+	"chatId": "aCh2iBdMOpu6y3Bh1dEL",
 	"log": [
 		{
+			"userId": "sdfsd3234hdsf"
 			"username": "User 1"
 			"message": "Hello world"
-		}, 
+		},
 		{
+			"userId": "dsfsi3i324osd"
 			"username": "User 2"
 			"message": "World Hello!"
 		}
-	] 
+	]
 }
 ```
 
-##### Sample Response (TBD)
+##### Sample Response
 
+Indicates if insertion was successful, or provides a error message.

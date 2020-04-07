@@ -4,7 +4,13 @@ import { DB_COLLECTION_CHATROOMS } from '../config/constants';
 import { MessageRequest } from '../models/Requests';
 import { Chatroom, Message } from '../models/Chatroom';
 
+/**
+ * Handles MessageLog requests
+ */
 export class MessageController {
+  /**
+   * These are the chatroom ids that have been polled. If a message log is received, the id will be removed.
+   */
   private static polledChatIds = new Set();
 
   private static validateBody(body: any) {
@@ -29,6 +35,9 @@ export class MessageController {
     return MessageController.polledChatIds.has(chatId);
   }
 
+  /**
+   * Handle a message log request
+   */
   public handleMessageLog(req: Request, res: Response) {
     const messageRequest = req.body as MessageRequest;
     if (!MessageController.validateBody(messageRequest)) {
@@ -43,6 +52,8 @@ export class MessageController {
       .then((doc) => {
         if (doc) {
           const chatroom = doc.data() as Chatroom;
+
+          // If message log has more entries than the message log in the database, save the new message log
           if (chatroom.log.length < messageRequest.log.length) {
             firebaseObject.DB.collection(DB_COLLECTION_CHATROOMS)
               .doc(messageRequest.chatId)
@@ -54,6 +65,7 @@ export class MessageController {
                 res.send('Message log received');
               });
           } else if (chatroom.log.length === messageRequest.log.length) {
+            // Remove entry from polledChatIds, but don't save to the database since the logs will be the same
             if (MessageController.polledChatIds.has(messageRequest.chatId)) {
               MessageController.polledChatIds.delete(messageRequest.chatId);
             }

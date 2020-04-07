@@ -1,6 +1,9 @@
 import express, { Request, Response } from 'express';
 import { controllers } from '../controllers';
 
+/**
+ * Routes requests to the /chatroom endpoint
+ */
 export const chatroomRouter = express.Router({
   strict: true,
 });

@@ -6,11 +6,17 @@ import { HeartbeatRequest } from '../models/Requests';
 import { Chatroom } from '../models/Chatroom';
 import { MessageController } from './MessageController';
 
+/**
+ * Handles heartbeat requests
+ */
 export class HeartbeatController {
   private static validateBody(body: any) {
     return body.userId && body.chatId && body.ip && body.port;
   }
 
+  /**
+   * Handle when a chatnode sends a heartbeat message
+   */
   public handleHeartBeat(req: Request, res: Response) {
     const heartbeatRequest = req.body as HeartbeatRequest;
     if (!HeartbeatController.validateBody(heartbeatRequest)) {
@@ -48,6 +54,7 @@ export class HeartbeatController {
               if (chatroom.toBePolled) {
                 MessageController.addPolledChatId(heartbeatRequest.chatId);
                 setTimeout(() => {
+                  // If chatroom has not received the log, then set the chatroom toBePolled to true
                   if (MessageController.hasPolledChatId(heartbeatRequest.chatId)) {
                     firebaseObject.DB.collection(DB_COLLECTION_CHATROOMS)
                       .doc(heartbeatRequest.chatId)
