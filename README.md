@@ -1,8 +1,11 @@
 #CentralServer
 
 ## Setup (dev)
-1. Run `npm install`
-2. Run `npm run dev`
+1. Make sure you have node.js v12.
+2. Install typescript `npm install -g typescript`
+3. Install 
+4. Run `npm install`
+5. Run `npm run dev`
 
 ## Deploy
 1. Run `gcloud init`. Requires authorization.
